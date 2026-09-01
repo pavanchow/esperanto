@@ -1,154 +1,343 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Esperanto — a small statically-typed language with type inference, built from scratch in Rust</title>
-<meta name="description" content="Esperanto by Pavan Nallamothu: a small statically-typed programming language with type inference, built from scratch in Rust. Lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs.">
-<meta name="keywords" content="Esperanto, programming language, type inference, static type checker, interpreter, Rust, build your own language, Pavan Nallamothu, pavanchow">
-<meta name="author" content="Pavan Nallamothu">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esperanto: a statically-typed language with type inference, in Rust</title>
+<meta name="description" content="Esperanto by Pavan Nallamothu: a small statically-typed programming language with type inference, built from scratch in Rust. Lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs. Try it live.">
+<meta name="author" content="Pavan Nallamothu (pavanchow)">
+<link rel="canonical" href="https://pavanchow.github.io/esperanto/">
+<link rel="author" href="https://github.com/pavanchow">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Esperanto — a statically-typed language built from scratch in Rust">
-<meta property="og:description" content="A small statically-typed language with type inference: lexer, parser, type checker, and interpreter you can read end to end. A program that does not type-check never runs.">
+<meta property="og:title" content="Esperanto: a statically-typed language with type inference, in Rust">
+<meta property="og:description" content="A small statically-typed language with type inference: lexer, parser, type checker, and interpreter you can read end to end. A program that does not type-check never runs. By Pavan Nallamothu.">
 <meta property="og:url" content="https://pavanchow.github.io/esperanto/">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Esperanto: a statically-typed language with type inference, in Rust">
+<meta name="twitter:description" content="A statically-typed language you can read end to end. Type-checked before it runs.">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Esperanto","applicationCategory":"DeveloperApplication","operatingSystem":"Cross-platform","description":"Esperanto is a small statically-typed programming language with type inference, built from scratch in Rust: a lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs.","url":"https://pavanchow.github.io/esperanto/","author":{"@type":"Person","name":"Pavan Nallamothu"},"programmingLanguage":"Rust","codeRepository":"https://github.com/pavanchow/esperanto","license":"https://opensource.org/licenses/MIT"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Person","name":"Pavan Nallamothu","alternateName":"pavanchow","url":"https://github.com/pavanchow","sameAs":["https://github.com/pavanchow","https://hackerone.com/pavanchow"]}
+</script>
 <style>
   :root{
-    --bg:#ffffff; --fg:#1d1d1f; --muted:#6e6e73; --hair:#e5e5e7;
-    --panel:#f5f5f7; --accent:#5b5bd6; --code:#1d1d1f; --ok:#1a7f37; --err:#b3261e;
-    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --accent:#5b5bd6;--accent-soft:#eeeefc;
+    --ink:#15161c;--muted:#6a6d78;--faint:#9a9dab;
+    --line:#ececed;--panel:#f7f7f9;--panel2:#fbfbfd;--ok:#1a7f37;--err:#b3261e;
+    --mono:ui-monospace,SFMono-Regular,Menlo,"SF Mono",monospace;
   }
-  @media (prefers-color-scheme:dark){
-    :root{--bg:#000000;--fg:#f5f5f7;--muted:#a1a1a6;--hair:#2a2a2c;--panel:#141416;
-      --accent:#9a9aff;--code:#f5f5f7;--ok:#4ac26b;--err:#ff6b60;}
+  @media(prefers-color-scheme:dark){
+    :root{--accent:#9a9aff;--accent-soft:#1a1a2e;--ink:#f2f2f6;--muted:#a1a1ab;--faint:#70727e;
+      --line:#26262a;--panel:#151517;--panel2:#0f0f11;--ok:#4ac26b;--err:#ff6b60;}
+    body{background:#000}
   }
-  *{box-sizing:border-box}
-  html{-webkit-text-size-adjust:100%}
-  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
-    line-height:1.5;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:820px;margin:0 auto;padding:0 24px}
-  section{padding:88px 0;border-bottom:1px solid var(--hair)}
-  section:last-of-type{border-bottom:0}
-  h1{font-size:64px;line-height:1.05;letter-spacing:-0.02em;margin:0 0 16px;font-weight:700}
-  h2{font-size:34px;letter-spacing:-0.01em;margin:0 0 20px;font-weight:600}
-  .lede{font-size:22px;color:var(--muted);margin:0 0 28px;max-width:640px}
-  p{font-size:18px;color:var(--muted);max-width:640px}
-  .hook{font-size:19px;color:var(--fg);max-width:640px}
-  a{color:var(--accent);text-decoration:none}
-  a:hover{text-decoration:underline}
-  .btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 22px;
-    border-radius:980px;font-size:16px;font-weight:500;margin-top:8px}
-  .btn:hover{text-decoration:none;opacity:.9}
-  .hero{padding:120px 0 96px}
-  pre{font-family:var(--mono);font-size:14.5px;line-height:1.6;color:var(--code);
-    background:var(--panel);border:1px solid var(--hair);border-radius:14px;
-    padding:20px;overflow:auto;margin:0}
-  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
-  .tab{font-family:var(--sans);font-size:15px;padding:8px 16px;border-radius:980px;
-    border:1px solid var(--hair);background:transparent;color:var(--fg);cursor:pointer}
-  .tab.active{background:var(--fg);color:var(--bg);border-color:var(--fg)}
-  .out{margin-top:14px;font-family:var(--mono);font-size:14px;white-space:pre-wrap;
-    background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:16px 20px}
-  .out .lab{color:var(--muted);font-family:var(--sans);font-size:13px;letter-spacing:.02em;
-    text-transform:uppercase;display:block;margin-bottom:6px}
-  .out .val{color:var(--ok)}
-  .rej{display:grid;gap:14px;margin-top:8px}
-  .rej .card{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:16px 20px}
-  .rej code{font-family:var(--mono);font-size:14px;color:var(--code)}
-  .rej .msg{display:block;margin-top:8px;font-family:var(--mono);font-size:13.5px;color:var(--err)}
-  .pipe{width:100%;height:auto;margin-top:8px}
-  .foot{padding:56px 0;color:var(--muted);font-size:15px}
-  .kw{color:var(--accent)} .st{color:var(--ok)} .cm{color:var(--muted)}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:#fff;color:var(--ink);
+    font:17px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 28px}
+  a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+  code{font-family:var(--mono);font-size:.92em;background:var(--panel);border-radius:4px;padding:.1em .4em}
+  nav{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.82);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid var(--line)}
+  @media(prefers-color-scheme:dark){nav{background:rgba(0,0,0,.72)}}
+  nav .row{display:flex;justify-content:space-between;align-items:center;height:56px;max-width:1040px;margin:0 auto;padding:0 28px}
+  nav .brand{display:flex;align-items:center;gap:9px;font-size:18px;font-weight:650;letter-spacing:-.01em}
+  nav .brand .gem{width:16px;height:16px;transform:rotate(45deg);border-radius:3px;background:linear-gradient(135deg,#b3b3ff,#5b5bd6)}
+  nav .links{display:flex;gap:26px;align-items:center}
+  nav .links a{color:var(--ink);font-size:14.5px}
+  @media(max-width:640px){nav .links a:not(.gh){display:none}}
+  .hero{padding:80px 0 36px;text-align:center}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  h1{font-size:clamp(40px,7vw,68px);line-height:1.05;letter-spacing:-.035em;font-weight:680;margin:18px 0 0;text-wrap:balance}
+  .hero p.sub{max-width:640px;margin:24px auto 0;font-size:clamp(17px,2.1vw,21px);color:var(--muted)}
+  .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .btn{display:inline-block;padding:13px 26px;border-radius:999px;font-size:15px;font-weight:600;border:1px solid var(--ink);color:var(--ink);transition:all .15s ease}
+  .btn:hover{opacity:.75;text-decoration:none}
+  .btn.primary{background:var(--ink);color:var(--panel2);border-color:var(--ink)}
+  @media(prefers-color-scheme:dark){.btn.primary{color:#000;background:var(--ink)}}
+  .stage{max-width:920px;margin:40px auto 0;padding:0 28px}
+  .card{background:var(--panel2);border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:0 18px 50px -30px rgba(91,91,214,.35)}
+  section{padding:88px 0;border-top:1px solid var(--line)}
+  h2{font-size:clamp(27px,4.2vw,40px);line-height:1.12;letter-spacing:-.025em;font-weight:660;text-align:center;max-width:760px;margin:0 auto}
+  .lead{max-width:640px;margin:20px auto 0;text-align:center;color:var(--muted)}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:960px;margin:48px auto 0}
+  @media(max-width:720px){.cards{grid-template-columns:1fr}}
+  .cardbox{background:var(--panel2);border:1px solid var(--line);border-radius:16px;padding:26px}
+  .cardbox h3{font-size:17px;margin-bottom:10px}
+  .cardbox p{color:var(--muted);font-size:14.5px;line-height:1.55}
+  pre{background:#15161c;color:#ececf4;border-radius:14px;padding:22px 24px;font-family:var(--mono);font-size:13.5px;line-height:1.65;overflow-x:auto;max-width:760px;margin:36px auto 0}
+  pre .cm{color:#8a8d9a} pre .kw{color:#b3b3ff} pre .st{color:#7fd6a0}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+  .chip{font-size:13.5px;padding:6px 13px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;font-family:inherit}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .chip.bad{color:var(--err);border-color:transparent;background:var(--accent-soft)}
+  #editor{width:100%;min-height:190px;font-family:var(--mono);font-size:14px;border:1px solid var(--line);
+    border-radius:12px;padding:16px;resize:vertical;line-height:1.6;background:#fff;color:var(--ink);tab-size:2}
+  @media(prefers-color-scheme:dark){#editor{background:#0b0b0d}}
+  .status{margin:12px 0;font-family:var(--mono);font-size:13px;padding:9px 14px;border-radius:10px;border:1px solid var(--line)}
+  .status.good{color:var(--ok);border-color:color-mix(in srgb,var(--ok) 40%,var(--line))}
+  .status.bad{color:var(--err);border-color:color-mix(in srgb,var(--err) 40%,var(--line))}
+  .run-row{display:flex;justify-content:space-between;align-items:center;gap:16px;margin:6px 0 12px;flex-wrap:wrap}
+  .run-row button{background:var(--ink);color:var(--panel2);border:none;border-radius:999px;padding:10px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+  @media(prefers-color-scheme:dark){.run-row button{color:#000}}
+  .run-row button:hover{opacity:.85}
+  .note{font-size:12.5px;color:var(--faint);font-family:var(--mono)}
+  #output{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;font-family:var(--mono);font-size:14px;min-height:56px;white-space:pre-wrap;color:var(--ink)}
+  #output .rej{color:var(--err)}
+  .pipe{display:block;width:100%;max-width:760px;height:auto;margin:32px auto 0}
+  footer{padding:60px 0;border-top:1px solid var(--line);text-align:center;color:var(--muted)}
+  footer .name{color:var(--ink);font-weight:600}footer p+p{margin-top:10px}
+  @media(max-width:640px){.hero{padding:56px 0 28px}section{padding:64px 0}.card{padding:18px}}
 </style>
 </head>
 <body>
-<noscript><div class="wrap"><p style="padding-top:40px">Esperanto is a small statically-typed programming language with type inference, built from scratch in Rust by Pavan Nallamothu. It has a lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs. Source: https://github.com/pavanchow/esperanto</p></div></noscript>
+<noscript><div class="wrap" style="padding:40px 28px;color:#6a6d78">Esperanto is a small statically-typed programming language with type inference, built from scratch in Rust by Pavan Nallamothu: a lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs. Source: <a href="https://github.com/pavanchow/esperanto">github.com/pavanchow/esperanto</a>.</div></noscript>
 
-<header class="hero"><div class="wrap">
-  <h1>Esperanto</h1>
-  <p class="lede">A small statically-typed language with type inference, built from scratch in Rust.</p>
-  <p class="hook">Lexer, parser, type checker, and interpreter, each short enough to read in one sitting. The part most build-your-own-language projects skip is the centrepiece here: <strong>a program that does not type-check never runs</strong>, and the checker infers the types you did not write down.</p>
-  <p><a class="btn" href="https://github.com/pavanchow/esperanto">View on GitHub</a></p>
-</div></header>
+<nav><div class="row">
+  <div class="brand"><span class="gem"></span>Esperanto</div>
+  <div class="links">
+    <a href="#play">Playground</a><a href="#tour">Tour</a><a href="#types">Types</a>
+    <a class="gh" href="https://github.com/pavanchow/esperanto">GitHub</a>
+  </div>
+</div></nav>
 
-<section><div class="wrap">
-  <h2>See it run</h2>
-  <p>Real programs, and the exact output Esperanto produces. Recursion is the iteration construct; there are no loops by design.</p>
-  <div class="tabs" id="tabs"></div>
-  <pre id="code"></pre>
-  <div class="out"><span class="lab">output</span><span class="val" id="output"></span></div>
+<div class="hero">
+  <p class="eyebrow">Rust · statically-typed language</p>
+  <h1>A typed language<br>you can read whole.</h1>
+  <p class="sub">Esperanto is a small statically-typed language with type inference, built from scratch in Rust. The part most build-your-own-language projects skip is the centrepiece here: a program that does not type-check never runs. Try it, right in your browser.</p>
+  <div class="cta-row">
+    <a class="btn primary" href="https://github.com/pavanchow/esperanto">View on GitHub</a>
+    <a class="btn" href="#play">Try it live</a>
+  </div>
+</div>
+
+<div class="stage" id="play"><div class="card">
+  <h2 style="text-align:left;max-width:none;margin-bottom:6px">Live playground</h2>
+  <p style="color:var(--muted);font-size:15px;margin-bottom:18px">This runs a faithful JavaScript port of the real engine, the same lexer, parser, type checker, and interpreter as the Rust crate. The status line type-checks as you type. Pick a broken example to watch the checker reject it <em>before</em> it runs.</p>
+  <div class="chips" id="chips"></div>
+  <textarea id="editor" spellcheck="false"></textarea>
+  <div class="status" id="status">&nbsp;</div>
+  <div class="run-row">
+    <button id="run">Run</button>
+    <span class="note">runs entirely in your browser, nothing is sent anywhere</span>
+  </div>
+  <div id="output">Press Run, or edit the code and watch the type checker above.</div>
+</div></div>
+
+<section id="why"><div class="wrap">
+  <h2>Typed, and small enough to read</h2>
+  <p class="lead">Four stages, one file each. The interesting one, the type checker, is the part you usually do not get to see.</p>
+  <div class="cards">
+    <div class="cardbox"><h3>Checked before it runs</h3><p>A separate, total type-checking pass. If a program is ill-typed it is rejected with a precise message, and not a single expression executes.</p></div>
+    <div class="cardbox"><h3>Inference, not annotation soup</h3><p><code>let</code> bindings and every expression infer their own type. You annotate function parameters; the rest is worked out for you.</p></div>
+    <div class="cardbox"><h3>Read in a sitting</h3><p>Lexer, parser, checker, and interpreter are a few hundred lines each. No bytecode, no VM, no parser generator, no dependencies.</p></div>
+  </div>
 </div></section>
 
-<section><div class="wrap">
-  <h2>Type errors, caught before it runs</h2>
-  <p>Each of these is rejected by the checker in <code style="font-family:var(--mono)">src/types.rs</code> before a single expression executes. The message is the one Esperanto actually prints.</p>
-  <div class="rej" id="rej"></div>
+<section id="types"><div class="wrap">
+  <h2>Errors, caught before it runs</h2>
+  <p class="lead">Each of these is rejected by the checker with the exact message Esperanto prints. Paste any of them into the playground above.</p>
+  <pre><span class="cm"># each line below is rejected at type-check time, before running</span>
+true + 1;                       <span class="cm"># arithmetic operator: expected Int, found Bool</span>
+if true then 1 else <span class="st">"x"</span>;        <span class="cm"># if branches disagree: then is Int, else is Str</span>
+let f = fn(n: Int) => n; f(true);  <span class="cm"># argument 1: expected Int, found Bool</span>
+let x = 5; x(3);                <span class="cm"># cannot call a value of type Int</span></pre>
 </div></section>
 
-<section><div class="wrap">
-  <h2>How it works</h2>
-  <p>Four stages, one file each. <code style="font-family:var(--mono)">typecheck</code> stops after stage three, so an ill-typed program is reported without running.</p>
-  <svg class="pipe" viewBox="0 0 820 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: source to tokens to AST to well-typed AST to value">
-    <defs><marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
-      <path d="M0,0 L7,3 L0,6 Z" fill="var(--muted)"/></marker></defs>
-    <g font-family="var(--mono)" font-size="13" fill="var(--fg)" text-anchor="middle">
-      <rect x="8"   y="40" width="120" height="40" rx="10" fill="var(--panel)" stroke="var(--hair)"/>
-      <text x="68"  y="65">source</text>
-      <rect x="180" y="40" width="120" height="40" rx="10" fill="var(--panel)" stroke="var(--hair)"/>
-      <text x="240" y="65">tokens</text>
-      <rect x="352" y="40" width="120" height="40" rx="10" fill="var(--panel)" stroke="var(--hair)"/>
-      <text x="412" y="65">AST</text>
-      <rect x="524" y="30" width="150" height="60" rx="10" fill="var(--panel)" stroke="var(--hair)"/>
-      <text x="599" y="56">well-typed</text><text x="599" y="74">AST</text>
-      <rect x="726" y="40" width="86" height="40" rx="10" fill="var(--panel)" stroke="var(--hair)"/>
-      <text x="769" y="65">value</text>
+<section id="tour"><div class="wrap">
+  <h2>Language tour</h2>
+  <p class="lead">Types, inference, functions, closures, recursion, and strings.</p>
+  <pre><span class="cm"># comments start with '#'. statements end with ';'.</span>
+<span class="kw">let</span> answer = 6 * 7;                 <span class="cm"># Int, inferred (no annotation)</span>
+<span class="kw">let</span> greeting: Str = <span class="st">"hello"</span>;        <span class="cm"># optional annotation, checked</span>
+
+<span class="cm"># parameters are annotated; the return type is optional</span>
+<span class="kw">let</span> add = <span class="kw">fn</span>(a: Int, b: Int) => a + b;
+
+<span class="cm"># a recursive binding declares its return type so it is in scope while checked</span>
+<span class="kw">let</span> <span class="kw">rec</span> factorial = <span class="kw">fn</span>(n: Int) -> Int =>
+  <span class="kw">if</span> n <= 1 <span class="kw">then</span> 1 <span class="kw">else</span> n * factorial(n - 1);
+
+<span class="cm"># closures capture their scope; curried adder</span>
+<span class="kw">let</span> add5 = (<span class="kw">fn</span>(x: Int) -> (Int) -> Int => <span class="kw">fn</span>(y: Int) -> Int => x + y)(5);
+
+print(factorial(10));               <span class="cm"># 3628800</span>
+print(greeting ++ <span class="st">", "</span> ++ str(add5(add(1, 1))));  <span class="cm"># hello, 7</span></pre>
+
+  <h2 style="margin-top:64px">How it works</h2>
+  <p class="lead">Type-checking is a distinct stage. Stop after it, and an ill-typed program is reported without ever running.</p>
+  <svg class="pipe" viewBox="0 0 820 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: source, tokens, AST, well-typed AST, value">
+    <defs><marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="var(--faint)"/></marker></defs>
+    <g font-family="var(--mono)" font-size="13" fill="var(--ink)" text-anchor="middle">
+      <rect x="8" y="40" width="120" height="40" rx="10" fill="var(--panel)" stroke="var(--line)"/><text x="68" y="65">source</text>
+      <rect x="180" y="40" width="120" height="40" rx="10" fill="var(--panel)" stroke="var(--line)"/><text x="240" y="65">tokens</text>
+      <rect x="352" y="40" width="120" height="40" rx="10" fill="var(--panel)" stroke="var(--line)"/><text x="412" y="65">AST</text>
+      <rect x="524" y="30" width="150" height="60" rx="10" fill="var(--panel)" stroke="var(--line)"/><text x="599" y="56">well-typed</text><text x="599" y="74">AST</text>
+      <rect x="726" y="40" width="86" height="40" rx="10" fill="var(--panel)" stroke="var(--line)"/><text x="769" y="65">value</text>
     </g>
-    <g stroke="var(--muted)" stroke-width="1.5" marker-end="url(#a)">
+    <g stroke="var(--faint)" stroke-width="1.5" marker-end="url(#a)">
       <line x1="130" y1="60" x2="176" y2="60"/><line x1="302" y1="60" x2="348" y2="60"/>
       <line x1="474" y1="60" x2="520" y2="60"/><line x1="676" y1="60" x2="722" y2="60"/>
     </g>
     <g font-family="var(--sans)" font-size="11.5" fill="var(--muted)" text-anchor="middle">
-      <text x="153" y="30">lex</text><text x="325" y="30">parse</text>
-      <text x="499" y="22">check</text><text x="699" y="30">eval</text>
+      <text x="153" y="30">lex</text><text x="325" y="30">parse</text><text x="499" y="22">check</text><text x="699" y="30">eval</text>
     </g>
   </svg>
 </div></section>
 
-<footer class="foot"><div class="wrap">
-  Esperanto by <strong>Pavan Nallamothu</strong> · MIT licensed · <a href="https://github.com/pavanchow/esperanto">github.com/pavanchow/esperanto</a>
+<footer><div class="wrap">
+  <p>Esperanto is MIT licensed. Source, tests, and the design notes are on <a href="https://github.com/pavanchow/esperanto">GitHub</a>.</p>
+  <p>By <span class="name">Pavan Nallamothu</span>.</p>
 </div></footer>
 
 <script>
-const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-function hl(src){
-  return esc(src)
-    .replace(/(#[^\n]*)/g,'<span class="cm">$1</span>')
-    .replace(/(&quot;|")(.*?)(\1)/g,'<span class="st">"$2"</span>')
-    .replace(/\b(let|rec|fn|if|then|else|true|false|Int|Bool|Str|print|len|str)\b/g,'<span class="kw">$1</span>');
+"use strict";
+/* ===== Esperanto engine (JS port of the Rust crate, node-verified for parity) ===== */
+const KEYWORDS={let:1,rec:1,fn:1,if:1,then:1,else:1,true:1,false:1};
+function mkerr(kind,msg,line){const e=new Error(msg);e.kind=kind;e.line=line;return e;}
+function cap(w){return w[0].toUpperCase()+w.slice(1);}
+function lex(src){
+  const t=[];let i=0,line=1;
+  const two={"++":"PlusPlus","==":"EqEq","!=":"NotEq","<=":"Le",">=":"Ge","&&":"AmpAmp","||":"PipePipe","->":"Arrow","=>":"FatArrow"};
+  const one={"+":"Plus","-":"Minus","*":"Star","/":"Slash","%":"Percent","<":"Lt",">":"Gt","!":"Bang","=":"Eq",":":"Colon",";":"Semi",",":"Comma","(":"LParen",")":"RParen"};
+  while(i<src.length){const c=src[i];
+    if(c==="\n"){line++;i++;continue;}
+    if(/\s/.test(c)){i++;continue;}
+    if(c==="#"){while(i<src.length&&src[i]!=="\n")i++;continue;}
+    if(c==='"'){i++;let s="";while(i<src.length&&src[i]!=='"'){if(src[i]==="\\"&&i+1<src.length){i++;const e=src[i];s+=e==="n"?"\n":e==="t"?"\t":e;i++;}else{if(src[i]==="\n")line++;s+=src[i];i++;}}if(i>=src.length)throw mkerr("lex","unterminated string",line);i++;t.push({t:"Str",v:s,line});continue;}
+    if(c>="0"&&c<="9"){let j=i;while(j<src.length&&src[j]>="0"&&src[j]<="9")j++;t.push({t:"Int",v:parseInt(src.slice(i,j),10),line});i=j;continue;}
+    if(/[A-Za-z_]/.test(c)){let j=i;while(j<src.length&&/[A-Za-z0-9_]/.test(src[j]))j++;const w=src.slice(i,j);t.push({t:KEYWORDS[w]?cap(w):"Ident",v:w,line});i=j;continue;}
+    const pr=src.slice(i,i+2);
+    if(two[pr]){t.push({t:two[pr],line});i+=2;continue;}
+    if(one[c]){t.push({t:one[c],line});i++;continue;}
+    throw mkerr("lex",`unexpected character '${c}'`,line);
+  }
+  t.push({t:"Eof",line});return t;
 }
-const examples = [
-  {name:"Factorial", code:`let rec factorial = fn(n: Int) -> Int =>\n  if n <= 1 then 1 else n * factorial(n - 1);\n\nprint(factorial(10));`, out:"3628800"},
-  {name:"Fibonacci", code:`let rec fib = fn(n: Int) -> Int =>\n  if n < 2 then n else fib(n - 1) + fib(n - 2);\n\nprint(fib(15));`, out:"610"},
-  {name:"Closures", code:`# curried adder: add(10) returns a function that remembers x\nlet add = fn(x: Int) -> (Int) -> Int =>\n  fn(y: Int) -> Int => x + y;\nlet add10 = add(10);\nprint(add10(5));\n\n# higher-order: apply a function twice\nlet twice = fn(f: (Int) -> Int, x: Int) -> Int => f(f(x));\nprint(twice(add10, 1));`, out:"15\n21"},
-  {name:"FizzBuzz", code:`# no loops: recursion builds one string, printed once\nlet rec label = fn(n: Int) -> Str =>\n  if n % 15 == 0 then "FizzBuzz"\n  else if n % 3 == 0 then "Fizz"\n  else if n % 5 == 0 then "Buzz"\n  else str(n);\nlet rec go = fn(n: Int, limit: Int) -> Str =>\n  if n > limit then "" else label(n) ++ "\\n" ++ go(n + 1, limit);\nprint(go(1, 15));`, out:"1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz"},
-];
-const rejections = [
-  {code:'true + 1;', msg:'type error: arithmetic operator: expected Int, found Bool'},
-  {code:'if true then 1 else "x";', msg:'type error: if branches disagree: then is Int, else is Str'},
-  {code:'let f = fn(n: Int) => n; f(true);', msg:'type error: argument 1: expected Int, found Bool'},
-  {code:'let x = 5; x(3);', msg:'type error: cannot call a value of type Int'},
-];
-const tabs=document.getElementById('tabs'), codeEl=document.getElementById('code'), outEl=document.getElementById('output');
-function show(i){
-  codeEl.innerHTML=hl(examples[i].code);
-  outEl.textContent=examples[i].out;
-  [...tabs.children].forEach((b,j)=>b.classList.toggle('active',j===i));
+class Parser{
+  constructor(toks){this.toks=toks;this.pos=0;}
+  peek(){return this.toks[this.pos].t;} line(){return this.toks[this.pos].line;}
+  advance(){const t=this.toks[this.pos];if(this.pos<this.toks.length-1)this.pos++;return t;}
+  eat(t){if(this.peek()===t){this.advance();return true;}return false;}
+  expect(t,w){if(!this.eat(t))throw mkerr("parse",`expected ${w}, found ${this.peek()}`,this.line());}
+  parseProgram(){const p=[];while(this.peek()!=="Eof")p.push(this.stmt());return p;}
+  stmt(){
+    if(this.eat("Let")){const rec=this.eat("Rec");const name=this.ident("binding name");let ty=null;if(this.eat("Colon"))ty=this.parseType();this.expect("Eq","'='");const value=this.expr();this.expect("Semi","';'");return {k:"let",name,rec,ty,value};}
+    const e=this.expr();this.expect("Semi","';'");return {k:"expr",e};
+  }
+  ident(w){const t=this.advance();if(t.t!=="Ident")throw mkerr("parse",`expected ${w}, found ${t.t}`,t.line);return t.v;}
+  parseType(){
+    if(this.eat("LParen")){const params=[];if(this.peek()!=="RParen"){do{params.push(this.parseType());}while(this.eat("Comma"));}this.expect("RParen","')'");this.expect("Arrow","'->' in function type");return {fn:params,ret:this.parseType()};}
+    const name=this.ident("type name");if(name==="Int"||name==="Bool"||name==="Str")return name;throw mkerr("parse",`unknown type '${name}'`,this.line());
+  }
+  expr(){return this.or();}
+  binl(next,ops){let l=next.call(this);while(ops[this.peek()]){const op=ops[this.peek()];this.advance();l={k:"bin",op,l,r:next.call(this)};}return l;}
+  or(){return this.binl(this.and,{PipePipe:"Or"});}
+  and(){return this.binl(this.equality,{AmpAmp:"And"});}
+  equality(){return this.binl(this.comparison,{EqEq:"Eq",NotEq:"Ne"});}
+  comparison(){return this.binl(this.concat,{Lt:"Lt",Le:"Le",Gt:"Gt",Ge:"Ge"});}
+  concat(){return this.binl(this.add,{PlusPlus:"Concat"});}
+  add(){return this.binl(this.mul,{Plus:"Add",Minus:"Sub"});}
+  mul(){return this.binl(this.unary,{Star:"Mul",Slash:"Div",Percent:"Mod"});}
+  unary(){if(this.eat("Bang"))return {k:"un",op:"Not",e:this.unary()};if(this.eat("Minus"))return {k:"un",op:"Neg",e:this.unary()};return this.callExpr();}
+  callExpr(){let e=this.primary();while(this.eat("LParen")){const args=[];if(this.peek()!=="RParen"){do{args.push(this.expr());}while(this.eat("Comma"));}this.expect("RParen","')' after arguments");e={k:"call",callee:e,args};}return e;}
+  primary(){
+    const tk=this.peek();
+    if(tk==="Int")return {k:"int",v:this.advance().v};
+    if(tk==="True"){this.advance();return {k:"bool",v:true};}
+    if(tk==="False"){this.advance();return {k:"bool",v:false};}
+    if(tk==="Str")return {k:"str",v:this.advance().v};
+    if(tk==="Ident")return {k:"var",name:this.advance().v};
+    if(tk==="LParen"){this.advance();const e=this.expr();this.expect("RParen","')'");return e;}
+    if(tk==="If"){this.advance();const c=this.expr();this.expect("Then","'then'");const th=this.expr();this.expect("Else","'else'");const el=this.expr();return {k:"if",c,th,el};}
+    if(tk==="Fn"){this.advance();this.expect("LParen","'(' after fn");const params=[];if(this.peek()!=="RParen"){do{const name=this.ident("parameter name");this.expect("Colon","':' and a type");params.push({name,ty:this.parseType()});}while(this.eat("Comma"));}this.expect("RParen","')'");let ret=null;if(this.eat("Arrow"))ret=this.parseType();this.expect("FatArrow","'=>' before the function body");return {k:"lambda",params,ret,body:this.expr()};}
+    throw mkerr("parse",`unexpected ${tk}`,this.line());
+  }
 }
-examples.forEach((e,i)=>{const b=document.createElement('button');b.className='tab';b.textContent=e.name;b.onclick=()=>show(i);tabs.appendChild(b);});
-show(0);
-document.getElementById('rej').innerHTML=rejections.map(r=>
-  `<div class="card"><code>${hl(r.code)}</code><span class="msg">${esc(r.msg)}</span></div>`).join('');
+const BUILTINS=["print","len","str"];
+function typeEq(a,b){if(typeof a==="string"||typeof b==="string")return a===b;return a.fn.length===b.fn.length&&a.fn.every((p,i)=>typeEq(p,b.fn[i]))&&typeEq(a.ret,b.ret);}
+function typeStr(t){return typeof t==="string"?t:`(${t.fn.map(typeStr).join(", ")}) -> ${typeStr(t.ret)}`;}
+function check(prog){
+  const scopes=[new Map()];
+  const lookup=n=>{for(let i=scopes.length-1;i>=0;i--)if(scopes[i].has(n))return scopes[i].get(n);return null;};
+  const define=(n,t)=>scopes[scopes.length-1].set(n,t);
+  const terr=m=>{throw mkerr("type",m);};
+  const unify=(a,e,ctx)=>{if(!typeEq(a,e))terr(`${ctx}: expected ${typeStr(e)}, found ${typeStr(a)}`);};
+  function builtin(name,args){if(args.length!==1)terr(`${name} takes exactly one argument`);const t=infer(args[0]);if(name==="print"){if(typeof t!=="string")terr("cannot print a function");return t;}if(name==="len"){unify(t,"Str","len");return "Int";}if(t==="Int"||t==="Bool")return "Str";terr(`str expects Int or Bool, found ${typeStr(t)}`);}
+  function infer(e){switch(e.k){
+    case "int":return "Int";case "bool":return "Bool";case "str":return "Str";
+    case "var":{const t=lookup(e.name);if(t===null)terr(`undefined variable '${e.name}'`);return t;}
+    case "un":if(e.op==="Not"){unify(infer(e.e),"Bool","operator '!'");return "Bool";}unify(infer(e.e),"Int","unary '-'");return "Int";
+    case "bin":{const lt=infer(e.l),rt=infer(e.r),op=e.op;
+      if(["Add","Sub","Mul","Div","Mod"].includes(op)){unify(lt,"Int","arithmetic operator");unify(rt,"Int","arithmetic operator");return "Int";}
+      if(op==="Concat"){unify(lt,"Str","operator '++'");unify(rt,"Str","operator '++'");return "Str";}
+      if(["Lt","Le","Gt","Ge"].includes(op)){unify(lt,"Int","comparison operator");unify(rt,"Int","comparison operator");return "Bool";}
+      if(op==="And"||op==="Or"){unify(lt,"Bool","boolean operator");unify(rt,"Bool","boolean operator");return "Bool";}
+      if(typeof lt!=="string")terr("cannot compare functions");unify(rt,lt,"operands of '==' / '!='");return "Bool";}
+    case "if":{unify(infer(e.c),"Bool","if condition");const tt=infer(e.th),et=infer(e.el);if(!typeEq(tt,et))terr(`if branches disagree: then is ${typeStr(tt)}, else is ${typeStr(et)}`);return tt;}
+    case "lambda":{scopes.push(new Map());for(const p of e.params)define(p.name,p.ty);const body=infer(e.body);scopes.pop();if(e.ret)unify(body,e.ret,"function body");return {fn:e.params.map(p=>p.ty),ret:e.ret||body};}
+    case "call":{if(e.callee.k==="var"&&BUILTINS.includes(e.callee.name)&&lookup(e.callee.name)===null)return builtin(e.callee.name,e.args);const ct=infer(e.callee);if(typeof ct==="string")terr(`cannot call a value of type ${typeStr(ct)}`);if(e.args.length!==ct.fn.length)terr(`function expects ${ct.fn.length} argument(s), got ${e.args.length}`);e.args.forEach((a,i)=>unify(infer(a),ct.fn[i],`argument ${i+1}`));return ct.ret;}
+  }}
+  for(const s of prog){
+    if(s.k==="let"){
+      if(s.rec){if(!(s.value.k==="lambda"&&s.value.ret))terr(`recursive binding '${s.name}' must be a function with a declared return type`);const fnTy={fn:s.value.params.map(p=>p.ty),ret:s.value.ret};define(s.name,fnTy);const got=infer(s.value);if(!typeEq(got,fnTy))terr(`recursive binding '${s.name}' declared ${typeStr(fnTy)} but body has type ${typeStr(got)}`);if(s.ty)unify(got,s.ty,`binding '${s.name}'`);}
+      else{const got=infer(s.value);if(s.ty){unify(got,s.ty,`binding '${s.name}'`);define(s.name,s.ty);}else define(s.name,got);}
+    }else infer(s.e);
+  }
+}
+function display(v){return v&&v.closure?"<function>":String(v);}
+function interpret(prog){
+  const out=[];const root={vars:new Map(),parent:null};
+  const get=(env,n)=>{let s=env;while(s){if(s.vars.has(n))return s.vars.get(n);s=s.parent;}return undefined;};
+  function ev(e,env){switch(e.k){
+    case "int":case "bool":case "str":return e.v;
+    case "var":return get(env,e.name);
+    case "un":{const v=ev(e.e,env);return e.op==="Neg"?-v:!v;}
+    case "bin":return bin(e.op,ev(e.l,env),ev(e.r,env));
+    case "if":return ev(e.c,env)?ev(e.th,env):ev(e.el,env);
+    case "lambda":return {closure:true,params:e.params.map(p=>p.name),body:e.body,env};
+    case "call":{if(e.callee.k==="var"&&BUILTINS.includes(e.callee.name)&&get(env,e.callee.name)===undefined){const a=e.args.map(x=>ev(x,env));if(e.callee.name==="print"){out.push(display(a[0]));return a[0];}if(e.callee.name==="len")return a[0].length;return display(a[0]);}const fn=ev(e.callee,env);const call={vars:new Map(),parent:fn.env};fn.params.forEach((p,i)=>call.vars.set(p,ev(e.args[i],env)));return ev(fn.body,call);}
+  }}
+  function bin(op,l,r){switch(op){case "Add":return l+r;case "Sub":return l-r;case "Mul":return l*r;case "Div":if(r===0)throw mkerr("runtime","division by zero");return Math.trunc(l/r);case "Mod":if(r===0)throw mkerr("runtime","modulo by zero");return l%r;case "Concat":return l+r;case "Lt":return l<r;case "Le":return l<=r;case "Gt":return l>r;case "Ge":return l>=r;case "And":return l&&r;case "Or":return l||r;case "Eq":return l===r;case "Ne":return l!==r;}}
+  let last;for(const s of prog){if(s.k==="let"){const v=ev(s.value,root);root.vars.set(s.name,v);last=v;}else last=ev(s.e,root);}return {output:out,value:last};
+}
+function analyze(src){try{const p=new Parser(lex(src)).parseProgram();check(p);return {ok:true};}catch(e){return {ok:false,kind:e.kind,msg:e.message,line:e.line};}}
+function run(src){const p=new Parser(lex(src)).parseProgram();check(p);return interpret(p);}
+
+/* ===== playground UI ===== */
+const EXAMPLES={
+  Factorial:`let rec factorial = fn(n: Int) -> Int =>\n  if n <= 1 then 1 else n * factorial(n - 1);\n\nprint(factorial(10));`,
+  Fibonacci:`let rec fib = fn(n: Int) -> Int =>\n  if n < 2 then n else fib(n - 1) + fib(n - 2);\n\nprint(fib(15));`,
+  Closures:`# curried adder: add(10) returns a function that remembers x\nlet add = fn(x: Int) -> (Int) -> Int =>\n  fn(y: Int) -> Int => x + y;\nlet add10 = add(10);\nprint(add10(5));\n\nlet twice = fn(f: (Int) -> Int, x: Int) -> Int => f(f(x));\nprint(twice(add10, 1));`,
+  FizzBuzz:`let rec label = fn(n: Int) -> Str =>\n  if n % 15 == 0 then "FizzBuzz"\n  else if n % 3 == 0 then "Fizz"\n  else if n % 5 == 0 then "Buzz"\n  else str(n);\nlet rec go = fn(n: Int, limit: Int) -> Str =>\n  if n > limit then "" else label(n) ++ "\\n" ++ go(n + 1, limit);\nprint(go(1, 15));`,
+  "Type error":`# the checker rejects this before running\nlet f = fn(n: Int) -> Int => n + 1;\nprint(f(true));`,
+  "Branch mismatch":`# both branches of an if must agree\nprint(if 3 < 5 then 1 else "nope");`,
+};
+const editor=document.getElementById("editor");
+const statusEl=document.getElementById("status");
+const outputEl=document.getElementById("output");
+const chips=document.getElementById("chips");
+function updateStatus(){
+  const a=analyze(editor.value);
+  if(a.ok){statusEl.className="status good";statusEl.textContent="✓ well-typed";}
+  else{statusEl.className="status bad";statusEl.textContent="✗ "+a.kind+" error"+(a.line?" (line "+a.line+")":"")+": "+a.msg;}
+}
+function runProgram(){
+  const a=analyze(editor.value);
+  if(!a.ok){outputEl.innerHTML='<span class="rej">Rejected by the type checker before running:\n'+a.kind+" error: "+a.msg.replace(/</g,"&lt;")+"</span>";return;}
+  try{const r=run(editor.value);outputEl.textContent=r.output.length?r.output.join("\n"):"(no output)";}
+  catch(e){outputEl.innerHTML='<span class="rej">'+e.kind+" error: "+e.message.replace(/</g,"&lt;")+"</span>";}
+}
+Object.keys(EXAMPLES).forEach((name,idx)=>{
+  const b=document.createElement("button");b.className="chip"+(name.length>9?" bad":"");b.textContent=name;
+  b.onclick=()=>{editor.value=EXAMPLES[name];updateStatus();runProgram();};
+  chips.appendChild(b);
+});
+let deb;editor.addEventListener("input",()=>{clearTimeout(deb);deb=setTimeout(updateStatus,120);});
+document.getElementById("run").addEventListener("click",runProgram);
+editor.value=EXAMPLES.Factorial;updateStatus();runProgram();
 </script>
 </body>
 </html>
