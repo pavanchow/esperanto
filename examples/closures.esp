@@ -1,0 +1,11 @@
+# Functions are first-class and close over their scope. 'add' is curried: it
+# returns a function, and that returned function remembers x.
+let add = fn(x: Int) -> (Int) -> Int =>
+  fn(y: Int) -> Int => x + y;
+
+let add10 = add(10);
+print(add10(5));
+
+# Higher-order: take a function and apply it twice.
+let twice = fn(f: (Int) -> Int, x: Int) -> Int => f(f(x));
+print(twice(add10, 1));

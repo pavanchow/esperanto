@@ -1,0 +1,6 @@
+# Classic double recursion. The type of fib, (Int) -> Int, is known from its
+# annotations before the body is checked, so the two recursive calls type-check.
+let rec fib = fn(n: Int) -> Int =>
+  if n < 2 then n else fib(n - 1) + fib(n - 2);
+
+print(fib(15));

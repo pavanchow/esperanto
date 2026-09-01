@@ -1,0 +1,19 @@
+[package]
+name = "esperanto"
+version = "0.1.0"
+edition = "2021"
+description = "A small statically-typed language with type inference, built from scratch in Rust: lexer, parser, type checker, and tree-walking interpreter you can read end to end"
+license = "MIT"
+repository = "https://github.com/pavanchow/esperanto"
+keywords = ["language", "interpreter", "type-inference", "type-checker", "compiler"]
+categories = ["compilers", "development-tools"]
+
+[lib]
+name = "esperanto"
+path = "src/lib.rs"
+
+[[bin]]
+name = "esperanto"
+path = "src/main.rs"
+
+[dependencies]

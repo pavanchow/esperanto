@@ -1,0 +1,12 @@
+# FizzBuzz with no loops, by design: recursion builds one string, printed once.
+let rec label = fn(n: Int) -> Str =>
+  if n % 15 == 0 then "FizzBuzz"
+  else if n % 3 == 0 then "Fizz"
+  else if n % 5 == 0 then "Buzz"
+  else str(n);
+
+let rec go = fn(n: Int, limit: Int) -> Str =>
+  if n > limit then ""
+  else label(n) ++ "\n" ++ go(n + 1, limit);
+
+print(go(1, 20));

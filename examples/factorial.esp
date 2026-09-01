@@ -1,0 +1,6 @@
+# Recursion: a recursive binding needs a declared return type so the function
+# is in scope, with a known type, while its own body is type-checked.
+let rec factorial = fn(n: Int) -> Int =>
+  if n <= 1 then 1 else n * factorial(n - 1);
+
+print(factorial(10));

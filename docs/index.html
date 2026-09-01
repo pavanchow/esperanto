@@ -1,12 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>esperanto</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Esperanto — a small statically-typed language with type inference, built from scratch in Rust</title>
+<meta name="description" content="Esperanto by Pavan Nallamothu: a small statically-typed programming language with type inference, built from scratch in Rust. Lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs.">
+<meta name="keywords" content="Esperanto, programming language, type inference, static type checker, interpreter, Rust, build your own language, Pavan Nallamothu, pavanchow">
+<meta name="author" content="Pavan Nallamothu">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Esperanto — a statically-typed language built from scratch in Rust">
+<meta property="og:description" content="A small statically-typed language with type inference: lexer, parser, type checker, and interpreter you can read end to end. A program that does not type-check never runs.">
+<meta property="og:url" content="https://pavanchow.github.io/esperanto/">
+<meta name="twitter:card" content="summary">
+<style>
+  :root{
+    --bg:#ffffff; --fg:#1d1d1f; --muted:#6e6e73; --hair:#e5e5e7;
+    --panel:#f5f5f7; --accent:#5b5bd6; --code:#1d1d1f; --ok:#1a7f37; --err:#b3261e;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--bg:#000000;--fg:#f5f5f7;--muted:#a1a1a6;--hair:#2a2a2c;--panel:#141416;
+      --accent:#9a9aff;--code:#f5f5f7;--ok:#4ac26b;--err:#ff6b60;}
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+    line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:820px;margin:0 auto;padding:0 24px}
+  section{padding:88px 0;border-bottom:1px solid var(--hair)}
+  section:last-of-type{border-bottom:0}
+  h1{font-size:64px;line-height:1.05;letter-spacing:-0.02em;margin:0 0 16px;font-weight:700}
+  h2{font-size:34px;letter-spacing:-0.01em;margin:0 0 20px;font-weight:600}
+  .lede{font-size:22px;color:var(--muted);margin:0 0 28px;max-width:640px}
+  p{font-size:18px;color:var(--muted);max-width:640px}
+  .hook{font-size:19px;color:var(--fg);max-width:640px}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .btn{display:inline-block;background:var(--accent);color:#fff;padding:12px 22px;
+    border-radius:980px;font-size:16px;font-weight:500;margin-top:8px}
+  .btn:hover{text-decoration:none;opacity:.9}
+  .hero{padding:120px 0 96px}
+  pre{font-family:var(--mono);font-size:14.5px;line-height:1.6;color:var(--code);
+    background:var(--panel);border:1px solid var(--hair);border-radius:14px;
+    padding:20px;overflow:auto;margin:0}
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 16px}
+  .tab{font-family:var(--sans);font-size:15px;padding:8px 16px;border-radius:980px;
+    border:1px solid var(--hair);background:transparent;color:var(--fg);cursor:pointer}
+  .tab.active{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+  .out{margin-top:14px;font-family:var(--mono);font-size:14px;white-space:pre-wrap;
+    background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:16px 20px}
+  .out .lab{color:var(--muted);font-family:var(--sans);font-size:13px;letter-spacing:.02em;
+    text-transform:uppercase;display:block;margin-bottom:6px}
+  .out .val{color:var(--ok)}
+  .rej{display:grid;gap:14px;margin-top:8px}
+  .rej .card{background:var(--panel);border:1px solid var(--hair);border-radius:14px;padding:16px 20px}
+  .rej code{font-family:var(--mono);font-size:14px;color:var(--code)}
+  .rej .msg{display:block;margin-top:8px;font-family:var(--mono);font-size:13.5px;color:var(--err)}
+  .pipe{width:100%;height:auto;margin-top:8px}
+  .foot{padding:56px 0;color:var(--muted);font-size:15px}
+  .kw{color:var(--accent)} .st{color:var(--ok)} .cm{color:var(--muted)}
+</style>
 </head>
 <body>
-<h1>esperanto</h1>
-<p>Site coming soon.</p>
-<p><a href="https://github.com/pavanchow/esperanto">View repository</a></p>
+<noscript><div class="wrap"><p style="padding-top:40px">Esperanto is a small statically-typed programming language with type inference, built from scratch in Rust by Pavan Nallamothu. It has a lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs. Source: https://github.com/pavanchow/esperanto</p></div></noscript>
+
+<header class="hero"><div class="wrap">
+  <h1>Esperanto</h1>
+  <p class="lede">A small statically-typed language with type inference, built from scratch in Rust.</p>
+  <p class="hook">Lexer, parser, type checker, and interpreter, each short enough to read in one sitting. The part most build-your-own-language projects skip is the centrepiece here: <strong>a program that does not type-check never runs</strong>, and the checker infers the types you did not write down.</p>
+  <p><a class="btn" href="https://github.com/pavanchow/esperanto">View on GitHub</a></p>
+</div></header>
+
+<section><div class="wrap">
+  <h2>See it run</h2>
+  <p>Real programs, and the exact output Esperanto produces. Recursion is the iteration construct; there are no loops by design.</p>
+  <div class="tabs" id="tabs"></div>
+  <pre id="code"></pre>
+  <div class="out"><span class="lab">output</span><span class="val" id="output"></span></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>Type errors, caught before it runs</h2>
+  <p>Each of these is rejected by the checker in <code style="font-family:var(--mono)">src/types.rs</code> before a single expression executes. The message is the one Esperanto actually prints.</p>
+  <div class="rej" id="rej"></div>
+</div></section>
+
+<section><div class="wrap">
+  <h2>How it works</h2>
+  <p>Four stages, one file each. <code style="font-family:var(--mono)">typecheck</code> stops after stage three, so an ill-typed program is reported without running.</p>
+  <svg class="pipe" viewBox="0 0 820 120" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Pipeline: source to tokens to AST to well-typed AST to value">
+    <defs><marker id="a" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="var(--muted)"/></marker></defs>
+    <g font-family="var(--mono)" font-size="13" fill="var(--fg)" text-anchor="middle">
+      <rect x="8"   y="40" width="120" height="40" rx="10" fill="var(--panel)" stroke="var(--hair)"/>
+      <text x="68"  y="65">source</text>
+      <rect x="180" y="40" width="120" height="40" rx="10" fill="var(--panel)" stroke="var(--hair)"/>
+      <text x="240" y="65">tokens</text>
+      <rect x="352" y="40" width="120" height="40" rx="10" fill="var(--panel)" stroke="var(--hair)"/>
+      <text x="412" y="65">AST</text>
+      <rect x="524" y="30" width="150" height="60" rx="10" fill="var(--panel)" stroke="var(--hair)"/>
+      <text x="599" y="56">well-typed</text><text x="599" y="74">AST</text>
+      <rect x="726" y="40" width="86" height="40" rx="10" fill="var(--panel)" stroke="var(--hair)"/>
+      <text x="769" y="65">value</text>
+    </g>
+    <g stroke="var(--muted)" stroke-width="1.5" marker-end="url(#a)">
+      <line x1="130" y1="60" x2="176" y2="60"/><line x1="302" y1="60" x2="348" y2="60"/>
+      <line x1="474" y1="60" x2="520" y2="60"/><line x1="676" y1="60" x2="722" y2="60"/>
+    </g>
+    <g font-family="var(--sans)" font-size="11.5" fill="var(--muted)" text-anchor="middle">
+      <text x="153" y="30">lex</text><text x="325" y="30">parse</text>
+      <text x="499" y="22">check</text><text x="699" y="30">eval</text>
+    </g>
+  </svg>
+</div></section>
+
+<footer class="foot"><div class="wrap">
+  Esperanto by <strong>Pavan Nallamothu</strong> · MIT licensed · <a href="https://github.com/pavanchow/esperanto">github.com/pavanchow/esperanto</a>
+</div></footer>
+
+<script>
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function hl(src){
+  return esc(src)
+    .replace(/(#[^\n]*)/g,'<span class="cm">$1</span>')
+    .replace(/(&quot;|")(.*?)(\1)/g,'<span class="st">"$2"</span>')
+    .replace(/\b(let|rec|fn|if|then|else|true|false|Int|Bool|Str|print|len|str)\b/g,'<span class="kw">$1</span>');
+}
+const examples = [
+  {name:"Factorial", code:`let rec factorial = fn(n: Int) -> Int =>\n  if n <= 1 then 1 else n * factorial(n - 1);\n\nprint(factorial(10));`, out:"3628800"},
+  {name:"Fibonacci", code:`let rec fib = fn(n: Int) -> Int =>\n  if n < 2 then n else fib(n - 1) + fib(n - 2);\n\nprint(fib(15));`, out:"610"},
+  {name:"Closures", code:`# curried adder: add(10) returns a function that remembers x\nlet add = fn(x: Int) -> (Int) -> Int =>\n  fn(y: Int) -> Int => x + y;\nlet add10 = add(10);\nprint(add10(5));\n\n# higher-order: apply a function twice\nlet twice = fn(f: (Int) -> Int, x: Int) -> Int => f(f(x));\nprint(twice(add10, 1));`, out:"15\n21"},
+  {name:"FizzBuzz", code:`# no loops: recursion builds one string, printed once\nlet rec label = fn(n: Int) -> Str =>\n  if n % 15 == 0 then "FizzBuzz"\n  else if n % 3 == 0 then "Fizz"\n  else if n % 5 == 0 then "Buzz"\n  else str(n);\nlet rec go = fn(n: Int, limit: Int) -> Str =>\n  if n > limit then "" else label(n) ++ "\\n" ++ go(n + 1, limit);\nprint(go(1, 15));`, out:"1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz"},
+];
+const rejections = [
+  {code:'true + 1;', msg:'type error: arithmetic operator: expected Int, found Bool'},
+  {code:'if true then 1 else "x";', msg:'type error: if branches disagree: then is Int, else is Str'},
+  {code:'let f = fn(n: Int) => n; f(true);', msg:'type error: argument 1: expected Int, found Bool'},
+  {code:'let x = 5; x(3);', msg:'type error: cannot call a value of type Int'},
+];
+const tabs=document.getElementById('tabs'), codeEl=document.getElementById('code'), outEl=document.getElementById('output');
+function show(i){
+  codeEl.innerHTML=hl(examples[i].code);
+  outEl.textContent=examples[i].out;
+  [...tabs.children].forEach((b,j)=>b.classList.toggle('active',j===i));
+}
+examples.forEach((e,i)=>{const b=document.createElement('button');b.className='tab';b.textContent=e.name;b.onclick=()=>show(i);tabs.appendChild(b);});
+show(0);
+document.getElementById('rej').innerHTML=rejections.map(r=>
+  `<div class="card"><code>${hl(r.code)}</code><span class="msg">${esc(r.msg)}</span></div>`).join('');
+</script>
 </body>
 </html>
