@@ -6,6 +6,7 @@
 <title>Esperanto: a statically-typed language with type inference, in Rust</title>
 <meta name="description" content="Esperanto by Pavan Nallamothu: a small statically-typed programming language with type inference, built from scratch in Rust. Lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs. Try it live.">
 <meta name="author" content="Pavan Nallamothu (pavanchow)">
+<meta name="keywords" content="programming language, type inference, type checker, static typing, statically-typed language, Rust, interpreter, lexer, parser, recursive descent, tree-walking interpreter, compiler, bidirectional type checking, Esperanto, Pavan Nallamothu, pavanchow">
 <link rel="canonical" href="https://pavanchow.github.io/esperanto/">
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="author" href="https://github.com/pavanchow">
@@ -17,7 +18,7 @@
 <meta name="twitter:title" content="Esperanto: a statically-typed language with type inference, in Rust">
 <meta name="twitter:description" content="A statically-typed language you can read end to end. Type-checked before it runs.">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Esperanto","applicationCategory":"DeveloperApplication","operatingSystem":"Cross-platform","description":"Esperanto is a small statically-typed programming language with type inference, built from scratch in Rust: a lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs.","url":"https://pavanchow.github.io/esperanto/","author":{"@type":"Person","name":"Pavan Nallamothu"},"programmingLanguage":"Rust","codeRepository":"https://github.com/pavanchow/esperanto","license":"https://opensource.org/licenses/MIT"}
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Esperanto","applicationCategory":"DeveloperApplication","operatingSystem":"Cross-platform","softwareVersion":"0.1.0","description":"Esperanto is a small statically-typed programming language with type inference, built from scratch in Rust: a lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs.","url":"https://pavanchow.github.io/esperanto/","author":{"@type":"Person","name":"Pavan Nallamothu"},"programmingLanguage":"Rust","codeRepository":"https://github.com/pavanchow/esperanto","license":"https://opensource.org/licenses/MIT"}
 </script>
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"Person","name":"Pavan Nallamothu","alternateName":"pavanchow","url":"https://github.com/pavanchow","sameAs":["https://github.com/pavanchow","https://hackerone.com/pavanchow"]}
@@ -97,6 +98,26 @@
   footer{padding:60px 0;border-top:1px solid var(--line);text-align:center;color:var(--muted)}
   footer .name{color:var(--ink);font-weight:600}footer p+p{margin-top:10px}
   @media(max-width:640px){.hero{padding:56px 0 28px}section{padding:64px 0}.card{padding:18px}}
+  nav .v{color:var(--faint);font-family:var(--mono);font-size:12px}
+  .estat{display:flex;gap:24px;flex-wrap:wrap;margin:16px 0 4px;padding:14px 18px;background:var(--panel);border-radius:12px;border:1px solid var(--line)}
+  .estat div{display:flex;flex-direction:column}
+  .estat .n{font-size:24px;font-weight:680;letter-spacing:-.02em;color:var(--ink)}
+  .estat .k{font-size:11.5px;color:var(--faint);text-transform:uppercase;letter-spacing:.06em;margin-top:2px}
+  .cap{font-family:var(--mono);font-size:12px;color:var(--faint);margin-top:14px}
+  .term{max-width:760px;margin:34px auto 0;background:#15161c;color:#ececf4;border-radius:14px;padding:22px 24px;font-family:var(--mono);font-size:13.5px;line-height:1.7;overflow-x:auto;white-space:pre}
+  .term .p{color:#7f82ff}.term .cc{color:#8a8d9a}.term .g{color:#7fd6a0}.term .rr{color:#ff8b80}
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;max-width:900px;margin:44px auto 0}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr}}
+  .prim{background:var(--panel2);border:1px solid var(--line);border-radius:16px;padding:22px 24px}
+  .prim h3{font-size:16px;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .prim p{color:var(--muted);font-size:14.5px;line-height:1.55}
+  .prim p code{font-size:.86em}
+  .tg{font-family:var(--mono);font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:6px;background:var(--accent-soft);color:var(--accent)}
+  .rows{max-width:820px;margin:40px auto 0}
+  .rows .row2{display:grid;grid-template-columns:minmax(150px,1fr) 2fr;gap:14px 38px;padding:22px 0;border-top:1px solid var(--line)}
+  .rows .row2:first-child{border-top:none}
+  .rows .row2 b{font-size:17px}.rows .row2 p{color:var(--muted);font-size:15px}
+  @media(max-width:640px){.rows .row2{grid-template-columns:1fr;gap:6px}}
 </style>
 </head>
 <body>
@@ -105,8 +126,9 @@
 <nav><div class="row">
   <div class="brand"><img src="logo.svg" class="brandlogo" alt="" width="22" height="22">Esperanto</div>
   <div class="links">
-    <a href="#play">Playground</a><a href="#tour">Tour</a><a href="#types">Types</a>
+    <a href="#play">Playground</a><a href="#rules">Type rules</a><a href="#use">Use it</a>
     <a class="gh" href="https://github.com/pavanchow/esperanto">GitHub</a>
+    <span class="v">v0.1.0</span>
   </div>
 </div></nav>
 
@@ -131,20 +153,46 @@
   <div class="chips" id="chips"></div>
   <textarea id="editor" spellcheck="false"></textarea>
   <div class="status" id="status">&nbsp;</div>
+  <div class="estat" id="estat"></div>
   <div class="run-row">
     <button id="run">Run</button>
     <span class="note">runs entirely in your browser, nothing is sent anywhere</span>
   </div>
   <div id="output">Press Run, or edit the code and watch the type checker above.</div>
+  <p class="cap">the same lexer, parser, type checker, and interpreter as the Rust crate, running client-side</p>
 </div></div>
 
-<section id="why"><div class="wrap">
-  <h2>Typed, and small enough to read</h2>
-  <p class="lead">Four stages, one file each. The interesting one, the type checker, is the part you usually do not get to see.</p>
-  <div class="cards">
-    <div class="cardbox"><h3>Checked before it runs</h3><p>A separate, total type-checking pass. If a program is ill-typed it is rejected with a precise message, and not a single expression executes.</p></div>
-    <div class="cardbox"><h3>Inference, not annotation soup</h3><p><code>let</code> bindings and every expression infer their own type. You annotate function parameters; the rest is worked out for you.</p></div>
-    <div class="cardbox"><h3>Read in a sitting</h3><p>Lexer, parser, checker, and interpreter are a few hundred lines each. No bytecode, no VM, no parser generator, no dependencies.</p></div>
+<section id="cli"><div class="wrap">
+  <h2>Run it, check it, or reject it</h2>
+  <p class="lead">The CLI runs a program, type-checks one without running, and reports the exact error when a program is ill-typed. Real output from the crate.</p>
+  <div class="term"><span class="cc"># run a program</span>
+<span class="p">$</span> cargo run -- examples/factorial.esp
+<span class="g">3628800</span>
+
+<span class="cc"># type-check without running</span>
+<span class="p">$</span> cargo run -- --check examples/fibonacci.esp
+<span class="g">ok: examples/fibonacci.esp type-checks</span>
+
+<span class="cc"># bad.esp contains:  true + 1;</span>
+<span class="p">$</span> cargo run -- bad.esp
+<span class="rr">type error: arithmetic operator: expected Int, found Bool</span>
+
+<span class="cc"># the whole suite</span>
+<span class="p">$</span> cargo test
+<span class="g">test result: ok. 20 passed; 0 failed; 0 ignored</span></div>
+</div></section>
+
+<section id="rules"><div class="wrap">
+  <p class="eyebrow" style="text-align:center">The primitives that matter</p>
+  <h2 style="margin-top:16px">The type rules the checker enforces</h2>
+  <p class="lead">Six rules, all in one file (<code>src/types.rs</code>, 248 lines). Nothing here is guessed at runtime; every one is decided before a single expression executes.</p>
+  <div class="grid2">
+    <div class="prim"><h3>Literals and operators <span class="tg">fixed</span></h3><p>Arithmetic is <code>Int -&gt; Int</code>, comparison is <code>Int -&gt; Bool</code>, <code>++</code> is <code>Str -&gt; Str</code>, and <code>&amp;&amp; || !</code> are <code>Bool</code>. Each operator has a fixed type.</p></div>
+    <div class="prim"><h3>let inference <span class="tg">inferred</span></h3><p>A binding takes the inferred type of its value. An optional annotation is checked against it, so ordinary values carry no types at all.</p></div>
+    <div class="prim"><h3>Functions <span class="tg">annotated</span></h3><p>Parameters are annotated; the return type is optional and inferred from the body. A function's type is <code>(P1, ..., Pn) -&gt; R</code>.</p></div>
+    <div class="prim"><h3>if branches <span class="tg">must agree</span></h3><p>The condition must be <code>Bool</code> and both branches must share a type, which becomes the type of the whole expression.</p></div>
+    <div class="prim"><h3>Recursion <span class="tg">explicit</span></h3><p>The one place an annotation is mandatory. <code>let rec</code> needs a declared return type so the name is in scope while its body is checked, and the checker says so rather than guessing.</p></div>
+    <div class="prim"><h3>Equality <span class="tg">same type</span></h3><p><code>==</code> and <code>!=</code> compare two values of the same non-function type. Comparing functions is rejected outright.</p></div>
   </div>
 </div></section>
 
@@ -156,6 +204,18 @@ true + 1;                       <span class="cm"># arithmetic operator: expected
 if true then 1 else <span class="st">"x"</span>;        <span class="cm"># if branches disagree: then is Int, else is Str</span>
 let f = fn(n: Int) => n; f(true);  <span class="cm"># argument 1: expected Int, found Bool</span>
 let x = 5; x(3);                <span class="cm"># cannot call a value of type Int</span></pre>
+</div></section>
+
+<section id="different"><div class="wrap">
+  <h2>The choices behind it</h2>
+  <p class="lead">Most build-your-own-language projects are dynamically typed, because the type checker is the part tutorials skip. Esperanto keeps that part and makes it the readable centrepiece. These are the honest trade-offs, straight from the design notes.</p>
+  <div class="rows">
+    <div class="row2"><b>Checked, then run</b><p>Type-checking is a separate, total pass. Stop after it with <code>--check</code> and an ill-typed program is reported without ever running. A program that does not type-check never runs.</p></div>
+    <div class="row2"><b>Not full Hindley-Milner</b><p>There is no unification variable and no let-generalization. The trade is honesty about scope: you can hold the entire checker in your head, and it still infers the common cases and rejects the real errors.</p></div>
+    <div class="row2"><b>Recursion is explicit</b><p>A recursive binding must be a function with a declared return type, so the name is in scope while its body is checked. The checker says this outright rather than guessing.</p></div>
+    <div class="row2"><b>Small on purpose</b><p>No modules, no mutation, no loops (recursion is the iteration construct), no user-defined types or generics. Each would blur the read-it-in-one-sitting line. The point is the checked core, not the size of the language.</p></div>
+    <div class="row2"><b>No dependencies</b><p>No bytecode, no VM, no parser generator. Lexer, parser, checker, and interpreter are a few hundred lines each: 190, 304, 248, and 125 lines of Rust.</p></div>
+  </div>
 </div></section>
 
 <section id="tour"><div class="wrap">
@@ -197,6 +257,25 @@ print(greeting ++ <span class="st">", "</span> ++ str(add5(add(1, 1))));  <span 
       <text x="153" y="30">lex</text><text x="325" y="30">parse</text><text x="499" y="22">check</text><text x="699" y="30">eval</text>
     </g>
   </svg>
+</div></section>
+
+<section id="use"><div class="wrap">
+  <h2>Use it</h2>
+  <p class="lead">One crate, no dependencies. Run a file, type-check one, drop into the REPL, or call the library directly.</p>
+  <div class="rows">
+    <div class="row2"><b>Run a file</b><p><code>esperanto examples/factorial.esp</code> lexes, parses, type-checks, then evaluates and prints.</p></div>
+    <div class="row2"><b>Type-check only</b><p><code>esperanto --check file.esp</code> stops after the checker. It prints <code>ok</code> or the exact type error, and nothing runs.</p></div>
+    <div class="row2"><b>REPL</b><p>Run <code>esperanto</code> with no arguments. Each line is a full program (statements end with <code>;</code>); ctrl-d to quit.</p></div>
+    <div class="row2"><b>Library</b><p>The crate exposes <code>run(src)</code> and <code>typecheck(src)</code> from <code>lib.rs</code>, returning a <code>Result</code> so callers see the same errors.</p></div>
+    <div class="row2"><b>Tests</b><p><code>cargo test</code> runs 20 tests covering evaluation, inference, and the rejections the checker should make.</p></div>
+  </div>
+  <pre style="margin-top:36px"><span class="cm"># clone, then run any of these</span>
+git clone https://github.com/pavanchow/esperanto
+cd esperanto
+cargo run -- examples/factorial.esp     <span class="cm"># run a program</span>
+cargo run -- --check examples/fib.esp   <span class="cm"># type-check without running</span>
+cargo run                               <span class="cm"># REPL</span>
+cargo test                              <span class="cm"># 20 tests</span></pre>
 </div></section>
 
 <footer><div class="wrap">
@@ -350,6 +429,25 @@ Object.keys(EXAMPLES).forEach((name,idx)=>{
 let deb;editor.addEventListener("input",()=>{clearTimeout(deb);deb=setTimeout(updateStatus,120);});
 document.getElementById("run").addEventListener("click",runProgram);
 editor.value=EXAMPLES.Factorial;updateStatus();runProgram();
+</script>
+<script>
+/* additive: a live stat row over the same lex/parse pass, engine script untouched */
+(function(){
+  const ed=document.getElementById("editor"),es=document.getElementById("estat"),
+        chipbox=document.getElementById("chips"),runbtn=document.getElementById("run");
+  function countFns(node){let c=0;(function w(x){if(!x||typeof x!=="object")return;if(x.k==="lambda")c++;for(const k in x){const v=x[k];if(Array.isArray(v))v.forEach(w);else if(v&&typeof v==="object")w(v);}})(node);return c;}
+  function stats(){
+    const src=ed.value||"";const lines=src.split("\n").length;
+    let toks="-",stmts="-",fns="-";
+    try{const t=lex(src);toks=t.length-1;const p=new Parser(t).parseProgram();stmts=p.length;fns=countFns(p);}catch(e){}
+    es.innerHTML=[["tokens",toks],["statements",stmts],["functions",fns],["lines",lines]]
+      .map(function(kv){return '<div><span class="n">'+kv[1]+'</span><span class="k">'+kv[0]+'</span></div>';}).join("");
+  }
+  ed.addEventListener("input",stats);
+  runbtn.addEventListener("click",stats);
+  chipbox.addEventListener("click",function(){setTimeout(stats,0);});
+  stats();
+})();
 </script>
 </body>
 </html>
