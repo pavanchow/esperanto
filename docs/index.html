@@ -7,6 +7,7 @@
 <meta name="description" content="Esperanto by Pavan Nallamothu: a small statically-typed programming language with type inference, built from scratch in Rust. Lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs. Try it live.">
 <meta name="author" content="Pavan Nallamothu (pavanchow)">
 <link rel="canonical" href="https://pavanchow.github.io/esperanto/">
+<link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="author" href="https://github.com/pavanchow">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Esperanto: a statically-typed language with type inference, in Rust">
@@ -50,6 +51,12 @@
   @media(max-width:640px){nav .links a:not(.gh){display:none}}
   .hero{padding:80px 0 36px;text-align:center}
   .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .howto{margin:0 0 18px;border:1px solid var(--line);border-radius:12px;padding:2px 16px;background:var(--panel2)}
+  .howto>summary{cursor:pointer;font-weight:600;padding:12px 0;list-style:none}
+  .howto>summary::-webkit-details-marker{display:none}
+  .howto>summary::before{content:"\25B8";display:inline-block;margin-right:8px;color:var(--accent);transition:transform .15s}
+  .howto[open]>summary::before{transform:rotate(90deg)}
+  .howto p{margin:0 0 14px;color:var(--muted);line-height:1.6;font-size:15px}
   h1{font-size:clamp(40px,7vw,68px);line-height:1.05;letter-spacing:-.035em;font-weight:680;margin:18px 0 0;text-wrap:balance}
   .hero p.sub{max-width:640px;margin:24px auto 0;font-size:clamp(17px,2.1vw,21px);color:var(--muted)}
   .cta-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}
@@ -104,6 +111,7 @@
 </div></nav>
 
 <div class="hero">
+  <img src="logo.svg" alt="Esperanto logo" width="72" height="72">
   <p class="eyebrow">Rust · statically-typed language</p>
   <h1>A typed language<br>you can read whole.</h1>
   <p class="sub">Esperanto is a small statically-typed language with type inference, built from scratch in Rust. The part most build-your-own-language projects skip is the centrepiece here: a program that does not type-check never runs. Try it, right in your browser.</p>
@@ -116,6 +124,10 @@
 <div class="stage" id="play"><div class="card">
   <h2 style="text-align:left;max-width:none;margin-bottom:6px">Live playground</h2>
   <p style="color:var(--muted);font-size:15px;margin-bottom:18px">This runs a faithful JavaScript port of the real engine, the same lexer, parser, type checker, and interpreter as the Rust crate. The status line type-checks as you type. Pick a broken example to watch the checker reject it <em>before</em> it runs.</p>
+  <details class="howto">
+    <summary>How to use this playground</summary>
+    <p>Write Esperanto in the editor, or load an example with the chips. The status line above the code type-checks continuously as you type, showing the inferred type or the exact error. Press <strong>Run</strong> to evaluate a well-typed program. Try one of the broken examples to see the checker reject it with a precise message before any code executes. Everything runs in your browser.</p>
+  </details>
   <div class="chips" id="chips"></div>
   <textarea id="editor" spellcheck="false"></textarea>
   <div class="status" id="status">&nbsp;</div>

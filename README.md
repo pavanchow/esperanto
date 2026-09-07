@@ -1,5 +1,7 @@
 # Esperanto
 
+<img src="docs/logo.svg" alt="Esperanto logo" width="96">
+
 **A small statically-typed programming language with type inference, built from scratch in Rust.** Lexer, parser, type checker, and tree-walking interpreter, each short enough to read in one sitting. By **Pavan Nallamothu** ([`pavanchow`](https://github.com/pavanchow)).
 
 Most "build your own language" projects are dynamically typed, because a type checker is the part tutorials skip. Esperanto keeps that part and makes it the readable centrepiece: **a program that does not type-check never runs**, and the checker infers the types you did not write down.

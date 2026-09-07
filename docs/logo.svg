@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="Esperanto logo">
+  <defs>
+    <linearGradient id="es-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#6d6df0"/>
+      <stop offset="1" stop-color="#3b3ba8"/>
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="120" height="120" rx="26" fill="url(#es-bg)"/>
+  <!-- lambda: the typed, functional core -->
+  <g fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M52 30 L86 96"/>
+    <path d="M66 58 L40 96"/>
+  </g>
+  <!-- type-checked badge: rejected before it runs, accepted here -->
+  <circle cx="92" cy="90" r="20" fill="#22c55e" stroke="#3b3ba8" stroke-width="4"/>
+  <path d="M83 90l6 6 12-13" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
