@@ -3,25 +3,38 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Esperanto: a statically-typed language with type inference, in Rust</title>
-<meta name="description" content="Esperanto by Pavan Nallamothu: a small statically-typed programming language with type inference, built from scratch in Rust. Lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs. Try it live.">
-<meta name="author" content="Pavan Nallamothu (pavanchow)">
-<meta name="keywords" content="programming language, type inference, type checker, static typing, statically-typed language, Rust, interpreter, lexer, parser, recursive descent, tree-walking interpreter, compiler, bidirectional type checking, Esperanto, Pavan Nallamothu, pavanchow">
+<title>Esperanto: statically-typed language in Rust | Pavan Nallamothu</title>
+<meta name="description" content="Esperanto is a statically-typed language with type inference, built from scratch in Rust: a lexer, parser, type checker, and tree-walking interpreter. By Pavan Nallamothu.">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="Pavan Nallamothu">
+<meta name="keywords" content="Esperanto, Esperanto language, statically-typed language, programming language in Rust, type inference, type checker, static typing, tree-walking interpreter, recursive descent parser, bidirectional type checking, build your own programming language, interpreter in Rust, from scratch programming language, lexer parser type checker, Pavan Nallamothu, pavanchow">
 <link rel="canonical" href="https://pavanchow.github.io/esperanto/">
 <link rel="icon" type="image/svg+xml" href="logo.svg">
 <link rel="author" href="https://github.com/pavanchow">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Esperanto: a statically-typed language with type inference, in Rust">
-<meta property="og:description" content="A small statically-typed language with type inference: lexer, parser, type checker, and interpreter you can read end to end. A program that does not type-check never runs. By Pavan Nallamothu.">
+<meta property="og:site_name" content="Pavan Nallamothu">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Esperanto: statically-typed language in Rust | Pavan Nallamothu">
+<meta property="og:description" content="A statically-typed language with type inference, built from scratch in Rust: lexer, parser, type checker, and interpreter. A program that does not type-check never runs.">
 <meta property="og:url" content="https://pavanchow.github.io/esperanto/">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Esperanto: a statically-typed language with type inference, in Rust">
-<meta name="twitter:description" content="A statically-typed language you can read end to end. Type-checked before it runs.">
+<meta property="og:image" content="https://pavanchow.github.io/esperanto/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Esperanto by Pavan Nallamothu">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Esperanto: statically-typed language in Rust | Pavan Nallamothu">
+<meta name="twitter:description" content="A statically-typed language with type inference, built from scratch in Rust. A program that does not type-check never runs. By Pavan Nallamothu.">
+<meta name="twitter:image" content="https://pavanchow.github.io/esperanto/og-image.png">
+<meta name="twitter:creator" content="@pavanchow">
+<meta name="twitter:site" content="@pavanchow">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Esperanto","applicationCategory":"DeveloperApplication","operatingSystem":"Cross-platform","softwareVersion":"0.1.0","description":"Esperanto is a small statically-typed programming language with type inference, built from scratch in Rust: a lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs.","url":"https://pavanchow.github.io/esperanto/","author":{"@type":"Person","name":"Pavan Nallamothu"},"programmingLanguage":"Rust","codeRepository":"https://github.com/pavanchow/esperanto","license":"https://opensource.org/licenses/MIT"}
-</script>
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"Person","name":"Pavan Nallamothu","alternateName":"pavanchow","url":"https://github.com/pavanchow","sameAs":["https://github.com/pavanchow","https://hackerone.com/pavanchow"]}
+{"@context":"https://schema.org","@graph":[
+{"@type":"SoftwareApplication","name":"Esperanto","applicationCategory":"DeveloperApplication","operatingSystem":"Cross-platform","softwareVersion":"0.1.0","description":"Esperanto is a small statically-typed programming language with type inference, built from scratch in Rust: a lexer, parser, type checker, and tree-walking interpreter you can read end to end. A program that does not type-check never runs.","url":"https://pavanchow.github.io/esperanto/","image":"https://pavanchow.github.io/esperanto/og-image.png","programmingLanguage":"Rust","codeRepository":"https://github.com/pavanchow/esperanto","license":"https://opensource.org/licenses/MIT","datePublished":"2026-08-21","author":{"@id":"https://github.com/pavanchow#pavan-nallamothu"},"publisher":{"@id":"https://github.com/pavanchow#pavan-nallamothu"},"keywords":"statically-typed language, type inference, type checker, tree-walking interpreter, programming language in Rust, recursive descent parser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"featureList":["Static type checking before execution","Type inference for let bindings","Lexer, parser, type checker, and tree-walking interpreter","Type-check-only mode via --check","Closures and explicit recursion","REPL and library API","Zero dependencies"]},
+{"@type":"Person","@id":"https://github.com/pavanchow#pavan-nallamothu","name":"Pavan Nallamothu","alternateName":"pavanchow","url":"https://github.com/pavanchow","jobTitle":"Software Engineer and Security Researcher","knowsAbout":["Rust","programming languages","compilers","type systems","type inference","interpreters","parsing"],"sameAs":["https://github.com/pavanchow","https://hackerone.com/pavanchow"]},
+{"@type":"WebSite","name":"Esperanto by Pavan Nallamothu","url":"https://pavanchow.github.io/esperanto/","author":{"@id":"https://github.com/pavanchow#pavan-nallamothu"}},
+{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Pavan Nallamothu","item":"https://github.com/pavanchow"},{"@type":"ListItem","position":2,"name":"Esperanto","item":"https://pavanchow.github.io/esperanto/"}]},
+{"@type":"WebPage","url":"https://pavanchow.github.io/esperanto/","name":"Esperanto: statically-typed language in Rust | Pavan Nallamothu","isPartOf":{"@id":"https://pavanchow.github.io/esperanto/"},"about":{"@type":"SoftwareApplication","name":"Esperanto"},"author":{"@id":"https://github.com/pavanchow#pavan-nallamothu"},"inLanguage":"en"}
+]}
 </script>
 <style>
   :root{
@@ -279,7 +292,16 @@ cargo test                              <span class="cm"># 20 tests</span></pre>
 </div></section>
 
 <footer><div class="wrap">
-  <p>Esperanto is MIT licensed. Source, tests, and the design notes are on <a href="https://github.com/pavanchow/esperanto">GitHub</a>.</p>
+  <p style="font-weight:600;color:var(--ink);margin-bottom:14px">More open-source tools by Pavan Nallamothu</p>
+  <p style="max-width:720px;margin:0 auto;line-height:1.9">
+    <a href="https://pavanchow.github.io/kindling/">Kindling, a dynamically typed language with a bytecode VM</a> ·
+    <a href="https://pavanchow.github.io/sprite/">Sprite, a tiny embeddable scripting language</a> ·
+    <a href="https://pavanchow.github.io/alchemist/">Alchemist, a compiler that lowers to stack bytecode</a> ·
+    <a href="https://pavanchow.github.io/whetstone/">Whetstone, a compiler optimizer</a> ·
+    <a href="https://pavanchow.github.io/mirage/">Mirage, a bytecode virtual machine</a> ·
+    <a href="https://github.com/pavanchow">All projects on GitHub</a>
+  </p>
+  <p style="margin-top:28px">Esperanto is MIT licensed. Source, tests, and the design notes are on <a href="https://github.com/pavanchow/esperanto">GitHub</a>.</p>
   <p>By <span class="name">Pavan Nallamothu</span>.</p>
 </div></footer>
 
