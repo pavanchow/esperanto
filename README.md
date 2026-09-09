@@ -13,7 +13,7 @@ Most "build your own language" projects are dynamically typed, because a type ch
 
 ```sh
 cargo run -- examples/factorial.esp     # run a program
-cargo run -- --check examples/fib.esp   # type-check without running
+cargo run -- --check examples/fibonacci.esp   # type-check without running
 cargo run                               # REPL
 cargo test                              # 20 tests: evaluation, inference, and rejections
 ```
