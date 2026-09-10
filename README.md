@@ -6,6 +6,8 @@ Esperanto is a small statically-typed programming language with type inference, 
 
 **[Live demo](https://pavanchow.github.io/esperanto/)** · MIT licensed · written in Rust
 
+Built from scratch by [Pavan Nallamothu](https://pavanchow.github.io/) ([LinkedIn](https://www.linkedin.com/in/pavanchow/), [GitHub](https://github.com/pavanchow)).
+
 Most "build your own language" projects are dynamically typed, because a type checker is the part tutorials skip. Esperanto keeps that part and makes it the readable centrepiece: **a program that does not type-check never runs**, and the checker infers the types you did not write down.
 
 - **Why use it.** To read a real, static type system end to end: inference for `let` bindings and every expression, a bidirectional-style check for functions, and clear type errors reported before any code executes. It is a teaching-grade reference, not another dynamic toy.
